@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 public class EstoqueDAO {
 
+	
 	public void consultarTodosItens() 
 	{
 	    Connection conn = DB.getConnection();
@@ -21,7 +23,7 @@ public class EstoqueDAO {
 	    try (PreparedStatement stmt = conn.prepareStatement(sql);
 	         ResultSet rs = stmt.executeQuery()) {
 
-	        System.out.printf("%-15s | %-20s | %-10s%n", "Freezer", "Item", "Quantidade");
+	        System.out.printf("%-15s | %-20s | %-10s%n", "Compartimento", "Item", "Quantidade");
 	        System.out.println("-----------------------------------------------------");
 
 	        while (rs.next()) 
@@ -37,128 +39,33 @@ public class EstoqueDAO {
 	    {
 	        throw new DbException(e.getMessage());
 	    }
-	}
-	public void consultarFreezer1() 
-	{
+	}		
+	public void consultarFreezerPorId(int freezerId) {
 	    Connection conn = DB.getConnection();
-	    String sql ="""
-				        SELECT i.id AS item_id, i.nome AS item_nome, e.quantidade
-						FROM estoque e
-						JOIN itens i ON e.item_id = i.id
-						JOIN freezers f ON e.freezer_id = f.id
-						WHERE f.nome = 'Freezer1';
-	    			""";
+	    String sql = """
+	        SELECT i.id AS item_id, i.nome AS item_nome, e.quantidade
+	        FROM estoque e
+	        JOIN itens i ON e.item_id = i.id
+	        JOIN freezers f ON e.freezer_id = f.id
+	        WHERE f.id = ?;
+	    """;
 
-	    try (PreparedStatement stmt = conn.prepareStatement(sql);
-	         ResultSet rs = stmt.executeQuery()) {
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setInt(1, freezerId); // passa o id do freezer
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            while (rs.next()) {
+	                int id = rs.getInt("item_id");
+	                String item = rs.getString("item_nome");
+	                int quantidade = rs.getInt("quantidade");
 
-
-
-	        while (rs.next()) 
-	        {
-	        	int id = rs.getInt("item_id");
-	            String item = rs.getString("item_nome");
-	            int quantidade = rs.getInt("quantidade");
-
-	            System.out.printf("[%d] %s (%d)%n", id, item, quantidade);
-	        }	       
-	    }
-	    catch (SQLException e) 
-	    {
+	                System.out.printf("[%d] %s (%d)%n", id, item, quantidade);
+	            }
+	        }
+	    } catch (SQLException e) {
 	        throw new DbException(e.getMessage());
 	    }
 	}
-	public void consultarFreezer2() 
-	{
-	    Connection conn = DB.getConnection();
-	    String sql ="""
-				        SELECT i.id AS item_id, i.nome AS item_nome, e.quantidade
-						FROM estoque e
-						JOIN itens i ON e.item_id = i.id
-						JOIN freezers f ON e.freezer_id = f.id
-						WHERE f.nome = 'Freezer2';
-	    			""";
 
-	    try (PreparedStatement stmt = conn.prepareStatement(sql);
-	         ResultSet rs = stmt.executeQuery()) {
-
-
-
-	        while (rs.next()) 
-	        {
-	        	int id = rs.getInt("item_id");
-	            String item = rs.getString("item_nome");
-	            int quantidade = rs.getInt("quantidade");
-
-	            System.out.printf("[%d] %s (%d)%n", id, item, quantidade);
-	        }	       
-	    }
-	    catch (SQLException e) 
-	    {
-	        throw new DbException(e.getMessage());
-	    }
-	}
-	public void consultarFreezer3() 
-	{
-	    Connection conn = DB.getConnection();
-	    String sql ="""
-				        SELECT i.id AS item_id, i.nome AS item_nome, e.quantidade
-						FROM estoque e
-						JOIN itens i ON e.item_id = i.id
-						JOIN freezers f ON e.freezer_id = f.id
-						WHERE f.nome = 'Freezer3';
-	    			""";
-
-	    try (PreparedStatement stmt = conn.prepareStatement(sql);
-	         ResultSet rs = stmt.executeQuery()) {
-
-
-
-	        while (rs.next()) 
-	        {
-	        	int id = rs.getInt("item_id");
-	            String item = rs.getString("item_nome");
-	            int quantidade = rs.getInt("quantidade");
-
-	            System.out.printf("[%d] %s (%d)%n", id, item, quantidade);
-	        }	       
-	    }
-	    catch (SQLException e) 
-	    {
-	        throw new DbException(e.getMessage());
-	    }
-	}
-	public void consultarFreezer4() 
-	{
-	    Connection conn = DB.getConnection();
-	    String sql ="""
-				        SELECT i.id AS item_id, i.nome AS item_nome, e.quantidade
-						FROM estoque e
-						JOIN itens i ON e.item_id = i.id
-						JOIN freezers f ON e.freezer_id = f.id
-						WHERE f.nome = 'Freezer4';
-	    			""";
-
-	    try (PreparedStatement stmt = conn.prepareStatement(sql);
-	         ResultSet rs = stmt.executeQuery()) {
-
-
-
-	        while (rs.next()) 
-	        {
-	        	int id = rs.getInt("item_id");
-	            String item = rs.getString("item_nome");
-	            int quantidade = rs.getInt("quantidade");
-
-	            System.out.printf("[%d] %s (%d)%n", id, item, quantidade);
-	        }	       
-	    }
-	    catch (SQLException e) 
-	    {
-	        throw new DbException(e.getMessage());
-	    }
-	}
-	
 	public void AdicionarItem()
 	{
 		Scanner sc = new Scanner (System.in);
@@ -240,7 +147,161 @@ public class EstoqueDAO {
 			}
 		
 		}
+	
+	public void adicionarCompartimento(String nomeFreezer) 
+{
+	    Connection conn = DB.getConnection();
+	    String sql = "INSERT INTO freezers (nome) VALUES (?);";
+	    
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, nomeFreezer); 
+	        
+	        int rowAffected = stmt.executeUpdate(); 
+	        
+	        if (rowAffected > 0) {
+	            System.out.println("Compartimento adicionado com sucesso!");
+	        } else {
+	            System.out.println("Erro ao adicionar compartimento!");
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Erro ao adicionar compartimento: " + e.getMessage());
+	    }
+	}
+	public void removerCompartimento(String nomeFreezer) {
+	    Connection conn = DB.getConnection();
+	    String sql = "DELETE FROM freezers WHERE nome = ?"; 
+	    
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, nomeFreezer); 
+	        
+	        int rowAffected = stmt.executeUpdate(); 
+	        
+	        if (rowAffected > 0) {
+	        	System.out.println();
+	            System.out.println("Compartimento removido com sucesso!");
+	            System.out.println();
+	        } else {
+	            System.out.println("Erro ao remover compartimento!");
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Erro ao remover compartimento: " + e.getMessage());
+	    }
+	}
+	public void consultarCompartimentos() 
+	{
+	    Connection conn = DB.getConnection();
+	    String sql ="""
+				        select nome from freezers;
+	    			""";
+
+	    try (PreparedStatement stmt = conn.prepareStatement(sql);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        System.out.printf("Lista de compartimentos: ");
+	      
+	        while (rs.next()) 
+	        {
+	            String nome = rs.getString("nome");
+
+	            System.out.printf(nome + ", ");
+	        }	       
+	    }
+	    catch (SQLException e) 
+	    {
+	        throw new DbException(e.getMessage());
+	    }
+	}
+	
+	public void adicionarItemNoEstoque(String nomeItem, int freezerId, int quantidade) {
+	    Connection conn = DB.getConnection();
+
+	    String insertItemSQL = "INSERT INTO itens (nome) VALUES (?)";
+	    String insertEstoqueSQL = "INSERT INTO estoque (freezer_id, item_id, quantidade) VALUES (?, ?, ?)";
+
+	    try (
+	        PreparedStatement insertItemStmt = conn.prepareStatement(insertItemSQL, Statement.RETURN_GENERATED_KEYS)
+	    ) {
+	        insertItemStmt.setString(1, nomeItem);
+	        int rows = insertItemStmt.executeUpdate();
+
+	        if (rows > 0) {
+	            ResultSet generatedKeys = insertItemStmt.getGeneratedKeys();
+	            if (generatedKeys.next()) {
+	                int itemId = generatedKeys.getInt(1); 
+
+	                
+	                try (PreparedStatement insertEstoqueStmt = conn.prepareStatement(insertEstoqueSQL)) {
+	                    insertEstoqueStmt.setInt(1, freezerId);
+	                    insertEstoqueStmt.setInt(2, itemId);
+	                    insertEstoqueStmt.setInt(3, quantidade);
+
+	                    int estoqueRows = insertEstoqueStmt.executeUpdate();
+	                    if (estoqueRows > 0) {
+	                        System.out.println("Item adicionado ao estoque com sucesso!");
+	                    } else {
+	                        System.out.println("Erro ao adicionar no estoque.");
+	                    }
+	                }
+	            }
+	        } else {
+	            System.out.println("Erro ao adicionar item.");
+	        }
+	    } catch (SQLException e) {
+	        throw new DbException("Erro no banco: " + e.getMessage());
+	    }
+	}
+	public void compartimentosID() 
+	{
+	    Connection conn = DB.getConnection();
+	    String sql = """
+	                    SELECT id, nome FROM freezers;
+	                """;
+
+	    try (PreparedStatement stmt = conn.prepareStatement(sql);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        System.out.println("Lista de compartimentos:");
+	      
+	        while (rs.next()) 
+	        {
+	            int id = rs.getInt("id");
+	            String nome = rs.getString("nome");
+
+	            System.out.printf("[%d] %s%n", id, nome);
+	        }	       
+	    }
+	    catch (SQLException e) 
+	    {
+	        throw new DbException(e.getMessage());
+	    }
+	}
+	public void removerItemDoEstoque(String nomeItem) {
+	    Connection conn = DB.getConnection();
+
+	    String deleteEstoqueSQL = "DELETE FROM estoque WHERE item_id = (SELECT id FROM itens WHERE nome = ?)";
+	    String deleteItemSQL = "DELETE FROM itens WHERE nome = ?";
+
+	    try (
+	        PreparedStatement deleteEstoqueStmt = conn.prepareStatement(deleteEstoqueSQL);
+	        PreparedStatement deleteItemStmt = conn.prepareStatement(deleteItemSQL)
+	    ) {
+	       
+	        deleteEstoqueStmt.setString(1, nomeItem);
+	        deleteEstoqueStmt.executeUpdate();
+	        
+	        deleteItemStmt.setString(1, nomeItem);
+	        int rows = deleteItemStmt.executeUpdate();
+
+	        if (rows > 0) {
+	            System.out.println("Item removido com sucesso!");
+	        } else {
+	            System.out.println("Item não encontrado.");
+	        }
+
+	    } catch (SQLException e) {
+	        throw new DbException("Erro ao remover item: " + e.getMessage());
+	    }
+	}
+
 }
 					
-					
-	
