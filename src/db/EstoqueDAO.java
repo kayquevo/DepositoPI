@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class EstoqueDAO {
-
 	
 	public void consultarTodosItens() 
 	{
@@ -81,8 +80,7 @@ public class EstoqueDAO {
 		String sql ="UPDATE estoque " +
 	                "SET quantidade = quantidade + ? "+
 	                "WHERE item_id = ?;";
-					
-					
+										
 		try(PreparedStatement stmt = conn.prepareStatement(sql))
 		{
 			stmt.setInt(1, quantidade);

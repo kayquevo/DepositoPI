@@ -107,7 +107,7 @@ public class Program2
 		                    break;
 
 		                case 5:
-		                    System.out.println("Digite o nome do : ");
+		                    System.out.print("Digite o nome do : ");
 		                    String nome4 = sc.nextLine();
 		                    dao.removerItemDoEstoque(nome4);
 		                    break;
