@@ -52,12 +52,18 @@ public class EstoqueDAO {
 	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 	        stmt.setInt(1, freezerId); // passa o id do freezer
 	        try (ResultSet rs = stmt.executeQuery()) {
+	        	boolean encontrou = false;
+	        	
 	            while (rs.next()) {
+	            	encontrou = true;
 	                int id = rs.getInt("item_id");
 	                String item = rs.getString("item_nome");
 	                int quantidade = rs.getInt("quantidade");
 
 	                System.out.printf("[%d] %s (%d)%n", id, item, quantidade);
+	            }
+	            if(!encontrou){
+	            	throw new DbException("Compartimento com ID " + freezerId + " não encontrado");
 	            }
 	        }
 	    } catch (SQLException e) {
@@ -65,8 +71,7 @@ public class EstoqueDAO {
 	    }
 	}
 
-	public void AdicionarItem()
-	{
+	public void AdicionarItem() throws SQLException{
 		Scanner sc = new Scanner (System.in);
 		
 			System.out.println();
@@ -77,11 +82,23 @@ public class EstoqueDAO {
 			int quantidade = sc.nextInt();				
 				
 		Connection conn = DB.getConnection();
-		String sql ="UPDATE estoque " +
+		String verificaSQL = "SELECT 1 FROM itens WHERE id = ?";
+		
+		try(PreparedStatement verificaStmt = conn.prepareStatement(verificaSQL)){
+			verificaStmt.setInt(1, itemId);
+			
+			try(ResultSet rs = verificaStmt.executeQuery()){
+				if(!rs.next()) {
+					throw new DbException("Item com ID " + itemId + " não existe.");
+				}
+			}
+		}
+	
+		String updateSql ="UPDATE estoque " +
 	                "SET quantidade = quantidade + ? "+
 	                "WHERE item_id = ?;";
 										
-		try(PreparedStatement stmt = conn.prepareStatement(sql))
+		try(PreparedStatement stmt = conn.prepareStatement(updateSql))
 		{
 			stmt.setInt(1, quantidade);
 			stmt.setInt(2, itemId);
