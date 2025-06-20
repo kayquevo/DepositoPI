@@ -1,43 +1,59 @@
-# Inventory Management System
+# 🌐 Inventory Management System
 
-**System in operation**
+> Sistema de gerenciamento de estoque com menus interativos e integração com banco de dados.
 
-First and second system menus
+---
 
-<img src="jdbc3/README.md/assets/Menu1.jpg" width="250" />  <img src="jdbc3/README.md/assets/Menu2.jpg" width="250" />
+## 🖥️ Sistema em operação
 
-View Itens
+### 📋 Menus principais
 
-<img src="jdbc3/README.md/assets/Consulta1.jpg" width="250" />  <img src="jdbc3/README.md/assets/Consulta0.jpg" width="334" />
+<img src="jdbc3/README.md/assets/Menu1.jpg" width="250" alt="Menu 1" />
+<img src="jdbc3/README.md/assets/Menu2.jpg" width="250" alt="Menu 2" />
 
-Add or remove product
+---
 
-<img src="jdbc3/README.md/assets/addouremove.jpg" width="250" />
+## 🔍 Visualização de Itens
 
-**Menu 2**
+<img src="jdbc3/README.md/assets/Consulta1.jpg" width="250" alt="Consulta 1" />
+<img src="jdbc3/README.md/assets/Consulta0.jpg" width="334" alt="Consulta 2" />
 
-Add compartment
+---
 
-<img src="jdbc3/README.md/assets/addComp.jpg" width="350" />
+## ➕➖ Adicionar ou Remover Produto
 
-Remove compartiment
+<img src="jdbc3/README.md/assets/addouremove.jpg" width="250" alt="Adicionar ou Remover Produto" />
 
-<img src="jdbc3/README.md/assets/removeComp.jpg" width="500" />
+---
 
-Add product
+## 📦 Menu 2 – Compartimentos e Produtos
 
-<img src="jdbc3/README.md/assets/addProduto.jpg" width="300" />
+### ➕ Adicionar Compartimento
 
-Remove product
+<img src="jdbc3/README.md/assets/addComp.jpg" width="350" alt="Adicionar Compartimento" />
 
-<img src="jdbc3/README.md/assets/removerProd.jpg" width="250" />
+### ➖ Remover Compartimento
 
-**Entity-Relationship Diagram**
+<img src="jdbc3/README.md/assets/removeComp.jpg" width="500" alt="Remover Compartimento" />
 
-<img src="jdbc3/README.md/assets/ER.jpg" width="400" />
+### ➕ Adicionar Produto
 
-**Technologies used**
+<img src="jdbc3/README.md/assets/addProduto.jpg" width="300" alt="Adicionar Produto" />
 
--Eclipse IDE (Java,POO)
+### ➖ Remover Produto
 
--mySQL(SQL)
+<img src="jdbc3/README.md/assets/removerProd.jpg" width="250" alt="Remover Produto" />
+
+---
+
+## 🗺️ Diagrama Entidade-Relacionamento (ER)
+
+<img src="jdbc3/README.md/assets/ER.jpg" width="400" alt="Diagrama ER" />
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- ☕ Java (POO)
+- 🐬 MySQL (SQL)
+- 🖥️ Eclipse IDE
